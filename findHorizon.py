@@ -33,7 +33,7 @@ import numpy as np
     
 #     border_grid = np.zeros((rows,cols))
 #     border_idx = 1
-
+#     border_vals = [];
 #     # Iterate through all pixels and identify border
 #     result = img
     
@@ -53,7 +53,10 @@ import numpy as np
 #                 border_grid[y,x] = 1
 #                 #border_vals[border_idx,0] = y      # row
 #                 #border_vals[border_idx,1] = x      # column
-#                 border_vals = [[border_vals],[y,x]] # append position of boder pixel
+#                 if not border_vals:
+#                     border_vals = [y,x]
+#                 else:
+#                 	border_vals = np.vstack((border_vals,[y,x]))
 #                 border_idx = border_idx + 1
 #                 result[y,x,0] = border_r
 #                 result[y,x,1] = border_g
@@ -203,7 +206,12 @@ import numpy as np
 if __name__=="__main__":
     img = cv2.imread('cessna.jpg')
     # findHorizon(img)
-    a = []
-    a = a.append([[1,2]])
-    a = a.append([[3,4]])
+    a = [1,2]
+    a = np.vstack((a,[[1,2]]))
+    a = np.vstack((a,[[3,4]]))
     print a
+
+    a = []
+    if not a:
+        a = [1,2]
+        print a
