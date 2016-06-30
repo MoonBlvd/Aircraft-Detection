@@ -211,9 +211,14 @@ def findHorizon(img, mask):
         return img_ground, img_sky
 
 if __name__=="__main__":
-    img = cv2.imread('cessna.jpg')
+    img = cv2.imread('horizonFig.png')
+    plt.imshow(img)
+    plt.show()
     img_ground,img_sky = findHorizon(img,mask)
-    print img_ground,img_sky
+    plt.imshow(img_ground)
+    plt.show()
+    plt.imshow(img_sky)
+    plt.show()
 
     # img_ground, img_sky = findHorizon(img,mask)
     # cv2.imshow(img_ground)
