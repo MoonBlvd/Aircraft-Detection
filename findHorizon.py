@@ -1,5 +1,7 @@
 import cv2
 import numpy as np
+import matplotlib.pyplot as plt
+import matplotlib.image as mpimg
 
 class mask():
     mask_id = 1 # 0-left, 1-center, 2-right
@@ -9,70 +11,75 @@ class mask():
     rmin = masks[mask_id][2]
     rmax = masks[mask_id][3]
 
-# def findHorizon(img, mask):
-    # load user parameters
-    # user_params = np.loadtxt('user_params.txt')
+def findHorizon(img, mask):
+    #load user parameters
+    user_params = np.loadtxt('user_params.txt')
+    print 'get into the function'
+    #print user_params
 
-    # #print user_params
-
-    # #Options 1 - along least squares line, 2 - clean sky cut
-    # seg_type = 2
+    #Options 1 - along least squares line, 2 - clean sky cut
+    seg_type = 2
     
-    # # Thresholding
-    # blue_tol = user_params[5]     # rgb blue threshold
-    # gray_tol = user_params[6]     # rgb gray threshold
-    # ground_tol = user_params[7]	  # rgb "dark" threshold
+    # Thresholding
+    blue_tol = user_params[5]     # rgb blue threshold
+    gray_tol = user_params[6]     # rgb gray threshold
+    ground_tol = user_params[7]	  # rgb "dark" threshold
     
 
-    # blue_check = img[:,:,2] >= blue_tol
-    # gray_check = (img[:,:,0] >= gray_tol) & (img[:,:,1] >= gray_tol) & (img[:,:,2] >= gray_tol)
+    blue_check = img[:,:,2] >= blue_tol
+    gray_check = (img[:,:,0] >= gray_tol) & (img[:,:,1] >= gray_tol) & (img[:,:,2] >= gray_tol)
     
-    # sky_pixels = blue_check | gray_check
-    # ground_pixels = (img[:,:,0] < ground_tol) & (img[:,:,1] < ground_tol) & (img[:,:,2] < ground_tol)
+    sky_pixels = blue_check | gray_check
+    ground_pixels = (img[:,:,0] < ground_tol) & (img[:,:,1] < ground_tol) & (img[:,:,2] < ground_tol)
             
-    # ## Identify image border
+    ## Identify image border
     
-    # # Image size
-    # rows, cols = img.shape 
+    # Image size
+    imgSize = img.shape
+    rows = imgSize[0]
+    cols = imgSize[1]
+
+    # Border color: red = (255,43,43)
+    border_r = 255
+    border_g = 43
+    border_b = 43
     
-    # # Border color: red = (255,43,43)
-    # border_r = 255
-    # border_g = 43
-    # border_b = 43
+    border_grid = np.zeros((rows,cols))
+    border_idx = 1
+    border_vals = [0,0]
+    # Iterate through all pixels and identify border
+    result = img
     
-    # border_grid = np.zeros((rows,cols))
-    # border_idx = 1
-    # border_vals = [];
-    # # Iterate through all pixels and identify border
-    # result = img
-    
-    # for x in range (1,(cols-1)):
-    #     for y in range (1, (rows-1)):
-    #         # Set conditions
-    #         cond_ground = ground_pixels[y,x]
-    #         cond1 = sky_pixels[y-1,x]      # pixel up
-    #         cond2 = sky_pixels[y+1,x]      # pixel down
-    #         cond3 = sky_pixels[y,x-1]      # pixel left
-    #         cond4 = sky_pixels[y,x+1]      # pixel right
+    for x in range (1,(cols-1)):
+        for y in range (1, (rows-1)):
+            # Set conditions
+            cond_ground = ground_pixels[y,x]
+            cond1 = sky_pixels[y-1,x]      # pixel up
+            cond2 = sky_pixels[y+1,x]      # pixel down
+            cond3 = sky_pixels[y,x-1]      # pixel left
+            cond4 = sky_pixels[y,x+1]      # pixel right
             
-    #         # Check conditions
-    #         # if one pixel is ground pixel and at least one of its surrounding pixels is sky pixel
-    #         if cond_ground and (cond1 or cond2 or cond3 or cond4):
-    #             # Save border
-    #             border_grid[y,x] = 1
-    #             #border_vals[border_idx,0] = y      # row
-    #             #border_vals[border_idx,1] = x      # column
-    #             if not border_vals:
-    #                 border_vals = [y,x]
-    #             else:
-    #             	border_vals = np.vstack((border_vals,[y,x]))
-    #             border_idx = border_idx + 1
-    #             result[y,x,0] = border_r
-    #             result[y,x,1] = border_g
-    #             result[y,x,2] = border_b
-    
-    # cv2.imshow(result)
-            
+            # Check conditions
+            # if one pixel is ground pixel and at least one of its surrounding pixels is sky pixel
+            if cond_ground and (cond1 or cond2 or cond3 or cond4):
+                # Save border
+                border_grid[y,x] = 1
+                #border_vals[border_idx,0] = y      # row
+                #border_vals[border_idx,1] = x      # column
+
+                border_vals = np.vstack((border_vals,[y,x]))
+                border_idx = border_idx + 1
+                result[y,x,0] = border_r
+                result[y,x,1] = border_g
+                result[y,x,2] = border_b
+
+    border_vals = np.delete(border_vals,0,axis = 0)
+    print result
+    plt.imshow(img)
+    plt.imshow(result)
+    cv2.waitkey()
+
+
     # ## Remove outliers
     # # rows = 1 = y, cols = 2 = x
     
@@ -208,9 +215,8 @@ class mask():
 if __name__=="__main__":
     img = cv2.imread('cessna.jpg')
     # findHorizon(img)
-    rows, cols = img.shape
-    print rows,cols
-    # findHorizon(img,mask)
+  
+    findHorizon(img,mask)
     # img_ground, img_sky = findHorizon(img,mask)
     # cv2.imshow(img_ground)
     # cv2.imshow(img_sky)
