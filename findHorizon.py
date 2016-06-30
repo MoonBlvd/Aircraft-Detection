@@ -74,149 +74,147 @@ def findHorizon(img, mask):
                 result[y,x,2] = border_b
 
     border_vals = np.delete(border_vals,0,axis = 0)
-    print result
-    plt.imshow(img)
-    plt.imshow(result)
-    cv2.waitkey()
 
 
-    # ## Remove outliers
-    # # rows = 1 = y, cols = 2 = x
-    
-    # dev_allow = user_params[9]     # pixels deviation
-    # px_cush = user_params[10]      # px cushion
-    
-    # # Get info on data set
-    # x_max   = max(border_vals[:,1]) 
-    # x_min   = min(border_vals[:,1])
-    # x_med   = np.median(border_vals[:,1])
-    
-    # y_max   = max(border_vals[:,0])
-    # y_min   = min(border_vals[:,0])
-    # y_med   = np.median(border_vals[:,0])
 
-    # # Determine which axis the horizon is along
-    # x_num = 0; y_num = 0
-    # for i in range (0, border_idx-1):
-    #     if abs(border_vals[i,0] - y_med) > dev_allow:
-    #         y_num = y_num + 1
+    ## Remove outliers
+    # rows = 1 = y, cols = 2 = x
+    
+    dev_allow = user_params[9]     # pixels deviation
+    px_cush = user_params[10]      # px cushion
+    
+    # Get info on data set
+    x_max   = max(border_vals[:,1]) 
+    x_min   = min(border_vals[:,1])
+    x_med   = np.median(border_vals[:,1])
+    
+    y_max   = max(border_vals[:,0])
+    y_min   = min(border_vals[:,0])
+    y_med   = np.median(border_vals[:,0])
+
+    print x_max
+    # Determine which axis the horizon is along
+    x_num = 0; y_num = 0
+    for i in range (0, border_idx-1):
+        if abs(border_vals[i,0] - y_med) > dev_allow:
+            y_num = y_num + 1
         
-    #     if abs(border_vals[i,1] - x_med) > dev_allow:
-    #         x_num = x_num + 1
+        if abs(border_vals[i,1] - x_med) > dev_allow:
+            x_num = x_num + 1
     
-    # if x_num > y_num:
-    #     h_flag = 1
-    # else:
-    #     h_flag = 0
+    if x_num > y_num:
+        h_flag = 1
+    else:
+        h_flag = 0
     
-    # clean_border = border_vals[1,:]
-    # # Horizontal horizon
-    # if h_flag:
-    #     # tolerance = avg variance + pixel cushion
-    #     tol = mean(abs(border_vals[:,0] - y_med)) + px_cush    
-    #     for i in range (1,length(border_vals[:,0])):
-    #         # Check mask
-    #         if mask.rmin > 0:
-    #             rtemp = border_vals[i,0]
-    #             ctemp = border_vals[i,1]
-    #             #------------------------------------------------------------------------------------------------------------------
-    #             mask_check = (rtemp < mask.rmax) and (rtemp > mask.rmin) and (ctemp < mask.cmax) and (ctemp > mask.cmin)
-    #         else:
-    #             mask_check = 0
-    #         end
-    #         mask_check = ~mask_check;   # now true = not in mask
+    clean_border = border_vals[1,:]
+    # Horizontal horizon
+    if h_flag:
+        # tolerance = avg variance + pixel cushion
+        tol = np.mean(abs(border_vals[:,0] - y_med)) + px_cush    
+        for i in range (1,len(border_vals[:,0])):
+            # Check mask
+            if mask.rmin > 0:
+                rtemp = border_vals[i,0]
+                ctemp = border_vals[i,1]
+                #------------------------------------------------------------------------------------------------------------------
+                mask_check = (rtemp < mask.rmax) and (rtemp > mask.rmin) and (ctemp < mask.cmax) and (ctemp > mask.cmin)
+            else:
+                mask_check = 0
+            mask_check = ~mask_check;   # now true = not in mask
             
-    #         # Vet values
-    #         if (abs(border_vals[i,0]- y_med) <= tol) and mask_check:
-    #             # Mark image
-    #             result[border_vals[i,0],border_vals[i,1],0] = border_r;
-    #             result[border_vals[i,0],border_vals[i,1],1] = border_g;
-    #             result[border_vals[i,0],border_vals[i,1],2] = border_b;
-    #             # Add new index
-    #             clean_idx = [border_vals[i,0], border_vals[i,1]]
-    #             clean_border = np.vstack((clean_border, clean_idx))
-    # # Vertial horizon
-    # else:
-    #     # tolerance = avg variance + pixel cushion
-    #     tol = mean(abs(border_vals(:,2) - x_med)) + px_cush
-    #     for i in range (1, len(border_vals[:,1])):
-    #         # Check mask
-    #         if mask.rmin > 0:
-    #             rtemp = border_vals[i,0]
-    #             ctemp = border_vals[i,1]
-    #             mask_check = rtemp < mask.rmax && rtemp > mask.rmin...
-    #                 && ctemp < mask.cmax && ctemp > mask.cmin;
-    #         else:
-    #             mask_check = 0
-    #         mask_check = ~mask_check;   # now true = not in mask
+            # Vet values
+            if (abs(border_vals[i,0]- y_med) <= tol) and mask_check:
+                # Mark image
+                result[border_vals[i,0],border_vals[i,1],0] = border_r;
+                result[border_vals[i,0],border_vals[i,1],1] = border_g;
+                result[border_vals[i,0],border_vals[i,1],2] = border_b;
+                # Add new index
+                clean_idx = [border_vals[i,0], border_vals[i,1]]
+                clean_border = np.vstack((clean_border, clean_idx))
+    # Vertial horizon
+    else:
+        # tolerance = avg variance + pixel cushion
+        tol = np.mean(abs(border_vals[:,1] - x_med)) + px_cush
+        for i in range (1, len(border_vals[:,1])):
+            # Check mask
+            if mask.rmin > 0:
+                rtemp = border_vals[i,0]
+                ctemp = border_vals[i,1]
+                mask_check = rtemp < mask.rmax and rtemp > mask.rmin and ctemp < mask.cmax and ctemp > mask.cmin
+            else:
+                mask_check = 0
+            mask_check = ~mask_check;   # now true = not in mask
             
-    #         # Vet values
-    #         if (abs(border_vals[i,1] - x_med) <= tol) and mask_check:
-    #             # Mark image
-    #             result[border_vals[i,0],border_vals[i,1],0] = border_r
-    #             result[border_vals[i,0],border_vals[i,1],1] = border_g
-    #             result[border_vals[i,0],border_vals[i,1],2] = border_b
-    #             # Add new index
-    #             clean_idx = [border_vals[i,0], border_vals[i,1]
-    #             clean_border = [clean_border; clean_idx]
+            # Vet values
+            if (abs(border_vals[i,1] - x_med) <= tol) and mask_check:
+                # Mark image
+                result[border_vals[i,0],border_vals[i,1],0] = border_r
+                result[border_vals[i,0],border_vals[i,1],1] = border_g
+                result[border_vals[i,0],border_vals[i,1],2] = border_b
+                # Add new index
+                clean_idx = [border_vals[i,0], border_vals[i,1]]
+                clean_border = np.vstack((clean_border, clean_idx))
 
-    # # Delete first index
-    # clean_border = clean_border[1:len(clean_border[:,1]),:]
+
+    print clean_border
+    # Delete first index
+    clean_border = clean_border[1:len(clean_border[:,1]),:]
     
-    # # Clean Sky Cut (skip rest of code)
-    # # rows = 1 = y, cols = 2 = x
+    # Clean Sky Cut (skip rest of code)
+    # rows = 1 = y, cols = 2 = x
 
-    # if seg_type == 2:
-    #     top_count = 0
-    #     bot_count = 0
+    if seg_type == 2:
+        top_count = 0
+        bot_count = 0
         
-    #     # Horizontal horizon
-    #     if h_flag:
-    #         line = min(clean_border[:,0])
-    #         img_top = img[1:line,:,:]
-    #         img_bot = img[line:rows,:,:]
+        # Horizontal horizon
+        if h_flag:
+            line = min(clean_border[:,0])
+            img_top = img[1:line,:,:]
+            img_bot = img[line:rows,:,:]
             
-    #         for i in range (0, len(border_vals[:,0])):
-    #             if (border_vals(i,1) < line):
-    #                 top_count = top_count + 1
-    #             else:
-    #                 bot_count = bot_count + 1
+            for i in range (0, len(border_vals[:,0])):
+                if (border_vals[i,0] < line):
+                    top_count = top_count + 1
+                else:
+                    bot_count = bot_count + 1
 
-    #     # Vertical horizon
-    #     else:
-    #         line = min(clean_border[:,1])
-    #         img_top = img[:,1:line,:]
-    #         img_bot = img[:,line:cols,:]
+        # Vertical horizon
+        else:
+            line = min(clean_border[:,1])
+            img_top = img[:,1:line,:]
+            img_bot = img[:,line:cols,:]
             
-    #         for i in range (0,len(border_vals[:,1])):
-    #             if border_vals[i,1] < line:
-    #                 top_count = top_count + 1
-    #             else
-    #                 bot_count = bot_count + 1
+            for i in range (0,len(border_vals[:,1])):
+                if border_vals[i,1] < line:
+                    top_count = top_count + 1
+                else:
+                    bot_count = bot_count + 1
 
-    #     # Assign return variables
-    #     if bot_count > top_count:
-    #         img_sky = img_top
-    #         img_ground = img_bot
-    #     else:
-    #         img_sky = img_bot
-    #         img_ground = img_top
+        # Assign return variables
+        if bot_count > top_count:
+            img_sky = img_top
+            img_ground = img_bot
+        else:
+            img_sky = img_bot
+            img_ground = img_top
         
-    #     # Save horizon info
-    #     horizon = [line, h_flag]    # line pixel, horizontal/vertical
+        # Save horizon info
+        horizon = [line, h_flag]    # line pixel, horizontal/vertical
         
-    #     # Show images (testing only)
-    #      # cv2.imshow(img_top);
-    #      # cv2.imshow(img_bot);
+        # Show images (testing only)
+         # cv2.imshow(img_top);
+         # cv2.imshow(img_bot);
         
-    #     # Skip rest of function 
-    #     return img_ground, img_sky
+        # Skip rest of function 
+        return img_ground, img_sky
 
 if __name__=="__main__":
     img = cv2.imread('cessna.jpg')
-    # findHorizon(img)
-  
-    findHorizon(img,mask)
+    img_ground,img_sky = findHorizon(img,mask)
+    print img_ground,img_sky
+
     # img_ground, img_sky = findHorizon(img,mask)
     # cv2.imshow(img_ground)
     # cv2.imshow(img_sky)
