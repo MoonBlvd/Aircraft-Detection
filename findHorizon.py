@@ -29,6 +29,9 @@ def findHorizon(img, mask):
     blue_check = img[:,:,2] >= blue_tol
     gray_check = (img[:,:,0] >= gray_tol) & (img[:,:,1] >= gray_tol) & (img[:,:,2] >= gray_tol)
     
+    print 'blue_check is: ', blue_check
+    print 'gray_check is: ', gray_check
+
     sky_pixels = blue_check | gray_check
     ground_pixels = (img[:,:,0] < ground_tol) & (img[:,:,1] < ground_tol) & (img[:,:,2] < ground_tol)
             
@@ -49,7 +52,8 @@ def findHorizon(img, mask):
     border_vals = [0,0]
     # Iterate through all pixels and identify border
     result = img
-    
+    print 'sky pixels are: ', sky_pixels
+    print 'ground pixels are: ', ground_pixels
     for x in range (1,(cols-1)):
         for y in range (1, (rows-1)):
             # Set conditions
@@ -73,8 +77,8 @@ def findHorizon(img, mask):
                 result[y,x,1] = border_g
                 result[y,x,2] = border_b
 
-    border_vals = np.delete(border_vals,0,axis = 0)
-
+    border_vals = np.delete(border_vals,0,axis = 0) # delete the fist row of the border values, which is [0, 0]
+    print 'border_vals are: ', border_vals
 
 
     ## Remove outliers
@@ -211,7 +215,7 @@ def findHorizon(img, mask):
         return img_ground, img_sky
 
 if __name__=="__main__":
-    img = cv2.imread('horizonFig.png')
+    img = cv2.imread('3.jpg')
     plt.imshow(img)
     plt.show()
     img_ground,img_sky = findHorizon(img,mask)
