@@ -77,7 +77,7 @@ def findHorizon(img, mask):
     print result
     plt.imshow(img)
     plt.imshow(result)
-    cv2.waitkey()
+    cv2.waitKey()
 
 
     # ## Remove outliers
