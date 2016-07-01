@@ -215,7 +215,7 @@ def findHorizon(img, mask):
         return img_ground, img_sky
 
 if __name__=="__main__":
-    img = cv2.imread('3.jpg')
+    img = cv2.imread('horizonFig.png')
     plt.imshow(img)
     plt.show()
     img_ground,img_sky = findHorizon(img,mask)
