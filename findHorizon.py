@@ -77,9 +77,7 @@ def findHorizon(img, mask):
                 result[y,x,1] = border_g
                 result[y,x,2] = border_b
 
-    border_vals = np.delete(border_vals,0,axis = 0) # delete the fist row of the border values, which is [0, 0]
-    print 'border_vals are: ', border_vals
-
+    border_vals = np.delete(border_vals,0,axis = 0)
 
     ## Remove outliers
     # rows = 1 = y, cols = 2 = x

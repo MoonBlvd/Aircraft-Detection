@@ -1,3 +1,4 @@
 *.mp4
+.*
 NASA_Video_Files
 !.gitignore
