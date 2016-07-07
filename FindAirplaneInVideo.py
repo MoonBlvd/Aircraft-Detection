@@ -21,9 +21,10 @@ from InitCaffe import *
 
 # Open video
 # cap = cv2.VideoCapture('../GRMN0033.MP4')
-cap = cv2.VideoCapture('Video.mp4')
+cap = cv2.VideoCapture('NASA_video1.mp4') # video with airplane.
+# cap = cv2.VideoCapture('../../NASA_Video_Files/migcc_sr22_92415_1305_right.MP4')
 
-patch_size = 50 # Size of image patch to extract around feature points
+patch_size = 15 # Size of image patch to extract around feature points
 
 count      = 0  # Loop counter to control frequency of object recognition
 objfreq    = 5  # Frequence of object recognition
@@ -98,7 +99,8 @@ while(cap.isOpened()):
             output_prob = output['prob'][i] 
     
             # sort top five predictions from softmax output
-            top_inds = output_prob.argsort()[::-1][:5]  # reverse sort and take five largest items
+            # top_inds = output_prob.argsort()[::-1][:5]  # reverse sort and take five largest items
+            top_inds = output_prob.argsort()[::-1][:10]  # reverse sort and take five largest items
             print 'The classes are:', top_inds 
             # print 'predicted class is:', output_prob.argmax()
             # print 'output label:', labels[output_prob.argmax()]    
@@ -109,7 +111,8 @@ while(cap.isOpened()):
             AirplaneLabels = [895,404,405,812]  # Airplane label ids in caffe database
             #437,566,556,570,706,735,752,818,830,848
             #VehicleLabels = [867,717,675,757,569,734,751,817,864,656] # Car, truck, van label ids in caffe database
-            for k in range (0,5):
+            # for k in range (0,5):
+            for k in range (0,10):
                 if (top_inds[k] in AirplaneLabels ):
                     if output_prob[top_inds[0]] > 0.0:
                         print 'Shown class is:', top_inds[k]
