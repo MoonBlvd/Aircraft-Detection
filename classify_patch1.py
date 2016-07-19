@@ -22,13 +22,14 @@ from InitCaffe import *
 # Open video
 # cap = cv2.VideoCapture('NASA_video1.mp4') # video with airplane.
 
-#patch_size = 15 # Size of image patch to extract around featuns points
+# patch_size = 15 # Size of image patch to extract around featuns points
 patch_size = 25 # Size of image patch to extract around feature points
 
 
 count      = 0  # Loop counter to control frequency of object recognition
 objfreq    = 5  # Frequence of object recognition
-NumCorners = 50 # Number of corners to extract in a given frame
+# NumCorners = 50 # Number of corners to extract in a given frame
+NumCorners = 10 # Number of corners to extract in a given frame
 '''
 # fourcc = cv2.cv.CV_FOURCC(*'XVID')
 # out = cv2.VideoWriter('result.avi', fourcc, 20.0, (450,170))
@@ -43,7 +44,9 @@ while(cap.isOpened()):
     # Implement object recognition at specified frequency
     if count%objfreq == 0:
 '''
-frame = cv2.imread('patch8901.png')
+# frame = cv2.imread('patch8901.png')
+frame = cv2.imread('frame184.png')
+# frame = cv2.imread('patch1.png')
 if 1:
     if 1:
         # Convert to gray scale

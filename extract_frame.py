@@ -13,16 +13,25 @@ import cv2
 # > 83
 # v 84
 
+video_header = 'NASA_Video_Files/'
+
 
 # vid = cv2.VideoCapture('NASA_Video1.mp4')
 # vid = cv2.VideoCapture('NASA_Video_Files/migcc_sr22_92415_1305_right.MP4')
-#     vid = cv2.VideoCapture('NASA_Video_Files/migcc_y6_92415_1040_center.MP4')
-vid = cv2.VideoCapture('NASA_Video_Files/migcc_null_92315__1338_center.MP4')
+# vid = cv2.VideoCapture('NASA_Video_Files/migcc_y6_92415_1040_center.MP4')
+# vid = cv2.VideoCapture('NASA_Video_Files/migcc_null_92315__1338_center.MP4')
+# vid = cv2.VideoCapture('NASA_Video_Files/migcc_bixler_92515_950_right.MP4')
 #print vid.get(cv2.cv.CV_CAP_PROP_FOURCC)
+# video_name = 'migcc_bixler_92515_950_right'
+video_name = 'migcc_bixler_92415_1116_left'
 
+
+video_suffix = '.MP4'
+
+vid = cv2.VideoCapture( video_header + video_name + video_suffix)
 
 #vid.set(cv2.cv.CV_CAP_PROP_POS_MSEC, 296000)
-vid.set(cv2.cv.CV_CAP_PROP_POS_MSEC, 619000)
+vid.set(cv2.cv.CV_CAP_PROP_POS_MSEC, 139000)
 # vid.set(cv2.cv.CV_CAP_PROP_POS_FRAMES, 8901)
 # vid.set(cv2.cv.CV_CAP_PROP_POS_AVI_RATIO, 0.303)
 print vid.get(cv2.cv.CV_CAP_PROP_POS_FRAMES)
@@ -81,7 +90,7 @@ while success:
 	y2 = 800
 	cv2.rectangle(image, (x1,y1), (x2,y2), (0,255, 0), 1)
 	# cv2.rectangle(image, (1500,0), (3000,800), (0,255, 0), 1)
-	image = image[y1+1:y2, x1+1:x2]
+#  	image = image[y1+1:y2, x1+1:x2]
 
 	if retval:
 		# subtract one because it points to the next available frame
@@ -123,10 +132,13 @@ while success:
 		print "extracting frame %f" % current_frame
 	elif val == 115:
 		print 's'
-		cv2.imwrite('patch8901.png', image)
+	
+		cv2.destroyAllWindows()	
+	  	output_filename = raw_input('Enter filename for frame\n')
+		cv2.imwrite(output_filename, image)
 		
 	elif val == 113:
-		# q
+	# q
 		success = 0
 
 cv2.destroyAllWindows()
